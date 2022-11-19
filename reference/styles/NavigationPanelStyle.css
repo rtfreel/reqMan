@@ -1,0 +1,89 @@
+#main-nav {
+    min-width: 390px;
+    width: 390px;
+    border-right: 2px solid #A9A9A9;
+}
+
+#nav-header {
+    padding: 0;
+    margin: 0;
+    height: 64px;
+}
+
+#home-ref {
+    width: 390px;
+    margin-top: 2px;
+    font-size: 48px;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: transparent;
+    color: #76C50A;
+    transform-origin: left center;
+}
+
+#home-ref:hover {
+    margin-top: 0px;
+    animation-name: home-ref-color-change;
+    animation-duration: 300ms;
+    color: #94E328;
+    font-size: 52px;
+}
+
+@keyframes home-ref-color-change {
+    from {
+        font-size: 48px;
+        color: #76C50A;
+    }
+    to {
+        font-size: 52px;
+        color: #94E328;
+    }
+}
+
+.page-ref {
+    text-decoration: none;
+}
+
+.page-ref-container {
+    height: 54px;
+    padding-left: 25px;
+    font-size: 38px;
+    color: #E0E0E0;
+    background-color: transparent;
+}
+
+.page-ref-container:hover, .sub-page-ref-container:hover {
+    color: #94E328;
+}
+
+.sub-page-ref {
+    text-decoration: none;
+    background-color: red;
+}
+
+.sub-page-ref-container {
+    height: 54px;
+    font-size: 38px;
+    padding-left: 15px;
+    margin-left: 35px;
+    color: #E0E0E0;
+    background-color: transparent;
+    border-left: 3px solid #76C50A;
+}
+
+.active-page-ref > *{
+    background-color: rgba(83, 140, 5, 0.15);
+}
+
+#help {
+    padding-left: 25px;
+    cursor: pointer;
+}
+
+#help * {
+    color: #A9A9A9;
+}
+
+#help:hover * {
+    color: #76C50A;
+}
