@@ -8,6 +8,7 @@ class Analysis extends Component {
         super(props);
         this.pers = this.emptyPers();
         this.LRERs = this.emptyLRERs();
+        this.vBounds = {min: 1, max: 0};
         // this.fakeData();
         // this.save();
         this.txtPers = {};
@@ -59,6 +60,7 @@ class Analysis extends Component {
         const cookies = new Cookies();
         this.pers = cookies.get("pers") || this.emptyPers();
         this.LRERs = cookies.get("lrers") || this.emptyLRERs();
+        this.vBounds = {min: 1, max: 0};
         if (!this.loaded) {
             for (let row in this.pers) {
                 this.txtPers[row] = [];
@@ -94,19 +96,20 @@ class Analysis extends Component {
         er /= pers.length;
         return Math.round(er * 1000) / 1000;
     }
-    calcLRER() {
-        
+    calcVRER(er, lrer) {
+        return Math.round(er * lrer * 1000) / 1000;
     }
-    calcVRER() {
-        
-    }
-    calcPRER() {
-        
+    calcPRER(vrer) {
+        let section = (this.vBounds.max - this.vBounds.min) / 3;
+        if (vrer < this.vBounds.min + section) return "Низький";
+        if (vrer >= this.vBounds.max - section) return "Високий";
+        return "Середній";
     }
 
     renderClearButton() {
         const removeAll = () => {
             this.pers = this.emptyPers();
+            this.LRERs = this.emptyLRERs();
             this.loaded = false;
             this.save();
             this.forceUpdate();
@@ -137,10 +140,15 @@ class Analysis extends Component {
         for (let i = 0; i < this.pers[id].length; i++) {
             perCells.push(this.renderInput(id, i));
         }
+        let er = this.calcER(this.pers[id]);
+        let lrer = this.txtLRERs[id];
+        let vrer = this.calcVRER(er, lrer);
+        if (vrer < this.vBounds.min) this.vBounds.min = vrer;
+        if (vrer > this.vBounds.max) this.vBounds.max = vrer;
         return <tr className="text-center" key={id}>
             <td title={name}>{id}</td>
             {perCells}
-            <td>{this.calcER(this.pers[id])}</td>
+            <td>{er}</td>
             <td>
                 <input id={id} 
                     className="per-input text-center w-100"
@@ -151,31 +159,32 @@ class Analysis extends Component {
                         this.save();
                         this.forceUpdate();
                     }} 
-                    value={this.txtLRERs[id]}/>
+                    value={lrer}/>
             </td>
-            <td>0.00</td>
-            <td>Високий</td>
+            <td>{vrer}</td>
+            <td>{this.calcPRER(vrer)}</td>
         </tr>
     }
 
     renderBlock(title, names) {
         let rows = [];
-        let er = 0, conclusion = "дуже висока";
+        let er = 0, conclusion = "дуже висока ймовірність";
         const sumER = this.calcSumER();
         for (let risk in names) {
             rows.push(this.renderRow(risk, names[risk]));
             er += this.calcER(this.pers[risk]);
         }
         er = Math.round(er/sumER * 1000) / 1000;
-        if (er < 0.1) conclusion = "дуже низька";
-        else if (er < 0.25) conclusion = "низька";
-        else if (er < 0.5) conclusion = "середня";
-        else if (er < 0.75) conclusion = "висока";
+        if (er < 0.1) conclusion = "дуже низька ймовірність";
+        else if (er < 0.25) conclusion = "низька ймовірність";
+        else if (er < 0.5) conclusion = "середня ймовірність";
+        else if (er < 0.75) conclusion = "висока ймовірність";
+        else if (isNaN(er)) { er = 0; conclusion = "дані відсутні"; }
         return <tbody>
             <tr>
                 <th className="sub-th text-center" colSpan={11}>{title}</th>
                 <th className="text-center">{er}</th>
-                <th colSpan={3}> - { conclusion } ймовірність</th>
+                <th colSpan={3}> - { conclusion }</th>
             </tr>
             {rows}
         </tbody>
@@ -183,10 +192,15 @@ class Analysis extends Component {
 
     render() {
         this.load();
+        let techRisks = this.renderBlock("Технічні ризики",   trNames);
+        let manRisks =  this.renderBlock("Ризики управління", mrNames);
+        let planRisks = this.renderBlock("Планові ризики",    crNames);
+        let finRisks =  this.renderBlock("Фінансові ризики",  prNames);
         return <>
-            <div className="row mt-3 d-flex flex-row justify-content-center"
+            <div className="mt-3 mx-auto w-50 d-flex flex-row justify-content-around" 
                 style={{fontSize: "1.4em"}}>
-                Total TODO...
+                <span>Найменша величина: {this.vBounds.min}</span>
+                <span>Найбільша величина: {this.vBounds.max}</span>
             </div>
             <div className="row">
                 <div className="col d-flex flex-row align-items-center">
@@ -221,10 +235,10 @@ class Analysis extends Component {
                             <th>10</th>
                         </tr>
                     </thead>
-                    { this.renderBlock("Технічні ризики",   trNames) }
-                    { this.renderBlock("Ризики управління", mrNames) }
-                    { this.renderBlock("Планові ризики",    crNames) }
-                    { this.renderBlock("Фінансові ризики",  prNames) }
+                    { techRisks }
+                    { manRisks }
+                    { planRisks }
+                    { finRisks }
                 </table>
             </div>
         </>
