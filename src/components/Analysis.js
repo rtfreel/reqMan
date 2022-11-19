@@ -8,10 +8,10 @@ class Analysis extends Component {
         super(props);
         this.pers = this.emptyPers();
         this.LRERs = this.emptyLRERs();
-        this.fakeData();
-        this.save();
+        // this.fakeData();
+        // this.save();
         this.txtPers = {};
-        this.txtLrers = {};
+        this.txtLRERs = {};
         for (let row in this.pers) {
             this.txtPers[row] = [];
             for (let i = 0; i < 10; i++) {
@@ -19,7 +19,7 @@ class Analysis extends Component {
             }
         }
         for (let id in this.LRERs) {
-            this.LRERs[id] = ""+this.LRERs;
+            this.txtLRERs[id] = ""+this.LRERs[id];
         }
         this.loaded = false;
     }
@@ -33,7 +33,6 @@ class Analysis extends Component {
         for (let id in this.LRERs) {
             this.LRERs[id] = +(Math.round(Math.random() * 99) / 100);
         }
-        console.log(this.LRERs)
     }
 
     emptyPers() {
@@ -53,10 +52,6 @@ class Analysis extends Component {
         for (let pId in prNames) LRERs[pId] = 0;
         for (let cId in crNames) LRERs[cId] = 0;
 
-        for (let l in LRERs) {
-            console.log("HERE " + LRERs[l]);
-        }
-
         return LRERs;
     }
 
@@ -72,7 +67,7 @@ class Analysis extends Component {
                 }
             }
             for (let id in this.LRERs) {
-                this.LRERs[id] = ""+this.LRERs;
+                this.txtLRERs[id] = ""+this.LRERs[id];
             }
             this.loaded = true;
         }
@@ -142,7 +137,6 @@ class Analysis extends Component {
         for (let i = 0; i < this.pers[id].length; i++) {
             perCells.push(this.renderInput(id, i));
         }
-        // console.log(this.lrers);
         return <tr className="text-center" key={id}>
             <td title={name}>{id}</td>
             {perCells}
@@ -152,12 +146,12 @@ class Analysis extends Component {
                     className="per-input text-center w-100"
                     type="text"
                     onChange={(e) => {
-                        this.txtLrers[id] = e.target.value;
+                        this.txtLRERs[id] = e.target.value;
                         this.LRERs[id] = +e.target.value;
                         this.save();
                         this.forceUpdate();
                     }} 
-                    value={this.txtLrers[id]}/>
+                    value={this.txtLRERs[id]}/>
             </td>
             <td>0.00</td>
             <td>Високий</td>
