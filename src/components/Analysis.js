@@ -9,8 +9,6 @@ class Analysis extends Component {
         this.pers = this.emptyPers();
         this.LRERs = this.emptyLRERs();
         this.vBounds = {min: 1, max: 0};
-        // this.fakeData();
-        // this.save();
         this.txtPers = {};
         this.txtLRERs = {};
         for (let row in this.pers) {
@@ -47,19 +45,17 @@ class Analysis extends Component {
 
     emptyLRERs() {
         let LRERs = {};
-
         for (let tId in trNames) LRERs[tId] = 0;
         for (let mId in mrNames) LRERs[mId] = 0;
         for (let pId in prNames) LRERs[pId] = 0;
         for (let cId in crNames) LRERs[cId] = 0;
-
         return LRERs;
     }
 
     load() {
         const cookies = new Cookies();
-        this.pers = cookies.get("pers") || this.emptyPers();
-        this.LRERs = cookies.get("lrers") || this.emptyLRERs();
+        this.pers = cookies.get(this.props.persCookie) || this.emptyPers();
+        this.LRERs = cookies.get(this.props.lrersCookie) || this.emptyLRERs();
         this.vBounds = {min: 1, max: 0};
         if (!this.loaded) {
             for (let row in this.pers) {
@@ -77,8 +73,8 @@ class Analysis extends Component {
 
     save() {
         const cookies = new Cookies();
-        cookies.set("pers", this.pers, { path: '/' });
-        cookies.set("lrers", this.LRERs, { path: '/' });
+        cookies.set(this.props.persCookie, this.pers, { path: '/' });
+        cookies.set(this.props.lrersCookie, this.LRERs, { path: '/' });
     }
 
     calcSumER() {
@@ -114,10 +110,21 @@ class Analysis extends Component {
             this.save();
             this.forceUpdate();
         }
-        return <button className="btn btn-secondary"
-            onClick={removeAll}>
-            Очистити
-        </button>;
+        return <div>
+            <button className="btn btn-outline-secondary me-2"
+                onClick={() => {
+                    this.fakeData();
+                    this.loaded = false;
+                    this.save();
+                    this.forceUpdate();
+                }}>
+                Заповнити
+            </button>
+            <button className="btn btn-secondary"
+                onClick={removeAll}>
+                Очистити
+            </button>
+        </div>;
     }
 
     renderInput(id, expert) {
