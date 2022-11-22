@@ -9,6 +9,11 @@ function RiskNavigation(props) {
             <PageReference name="Планування ризиків" href="/planning"/>
             <PageReference name="Моніторинг ризиків" href="/monitoring"/>
         </nav>
+        <nav className="d-flex flex-row justify-content-around">
+            <PageReference name="Оцінки користувачів" href="/clients"/>
+            <PageReference name="Оцінки експертів" href="/experts"/>
+            <PageReference name="Інфографіка" href="/charts"/>
+        </nav>
         <hr/>
     </div>;
 }

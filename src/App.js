@@ -9,6 +9,9 @@ import {
   Route,
   Routes
 } from "react-router-dom";
+import Experts from "./components/Experts";
+import Clients from "./components/Clients";
+import Charts from "./components/Charts";
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
               <Route exact path="/analysis" element={<Analysis key="pre-analysis" persCookie="pers" lrersCookie="lrers"/>}/>
               <Route exact path="/planning" element={<Planning/>}/>
               <Route exact path="/monitoring" element={<Analysis key="post-analysis" persCookie="erpers" lrersCookie="elrers"/>}/>
+              <Route exact path="/experts" element={<Experts/>}/>
+              <Route exact path="/clients" element={<Clients/>}/>
+              <Route exact path="/charts" element={<Charts/>}/>
           </Routes>
         </div>
       </Router>
